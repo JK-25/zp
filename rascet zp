@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Калькулятор зарплаты</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      max-width: 480px;
+      margin: 20px auto;
+      padding: 10px;
+      background: #f9f9f9;
+      color: #111;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-size: 18px;
+    }
+    input[type=number] {
+      width: 100%;
+      padding: 12px;
+      font-size: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 6px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 25px;
+      padding: 15px;
+      width: 100%;
+      font-size: 22px;
+      background-color: #007aff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    button:active {
+      background-color: #005bb5;
+    }
+    .result {
+      margin-top: 25px;
+      font-weight: 700;
+      font-size: 20px;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <h2>Калькулятор зарплаты</h2>
+
+  <label for="mrot">МРОТ (сум):</label>
+  <input type="number" id="mrot" value="1155000" />
+
+  <label for="oklad">Оклад (сум):</label>
+  <input type="number" id="oklad" value="20599000" />
+
+  <label for="factHours">Фактические часы:</label>
+  <input type="number" id="factHours" value="154" />
+
+  <label for="normHours">Норма часов:</label>
+  <input type="number" id="normHours" value="167" />
+
+  <button onclick="calculateSalary()">Рассчитать</button>
+
+  <div class="result" id="results"></div>
+
+  <script>
+    function calculateSalary() {
+      const mrot = parseFloat(document.getElementById('mrot').value);
+      const oklad = parseFloat(document.getElementById('oklad').value);
+      const factHours = parseFloat(document.getElementById('factHours').value);
+      const normHours = parseFloat(document.getElementById('normHours').value);
+
+      // Премия
+      const premia = (mrot * 1.4 * 0.2) + (mrot * 0.5);
+
+      // ЗП без премии
+      const zpWithoutPremia = (oklad * factHours / normHours) + premia;
+
+      // Доплата за праздник
+      const doplata = zpWithoutPremia / 14;
+
+      // ЗП без премии с доплатой
+      const zpWithDoplata = zpWithoutPremia + doplata;
+
+      // Общая ЗП с налогом 12%
+      const totalZp = zpWithDoplata * 0.88;
+
+      // Аванс 30%
+      const avans = oklad * 0.3;
+
+      // ЗП на конец месяца
+      const zpEndMonth = totalZp - avans;
+
+      // Форматирование суммы
+      function formatSum(value) {
+        return value.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ' сум';
+      }
+
+      const resultDiv = document.getElementById('results');
+      resultDiv.innerHTML = `
+        Аванс: <span>${formatSum(avans)}</span><br/>
+        ЗП на конец месяца: <span>${formatSum(zpEndMonth)}</span><br/>
+        Общая ЗП: <span>${formatSum(totalZp)}</span>
+      `;
+    }
+  </script>
+</body>
+</html>
